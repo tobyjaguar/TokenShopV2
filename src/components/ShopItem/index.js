@@ -1,7 +1,5 @@
-import React, { Component } from 'react'
-import { ContractData } from 'drizzle-react-components'
-import { drizzleConnect } from 'drizzle-react'
-import PropTypes from 'prop-types'
+import React, { useContext, useEffect, useState } from 'react'
+
 import web3 from 'web3'
 import BigNumber from 'bignumber.js'
 
@@ -10,6 +8,10 @@ import Button from '@material-ui/core/Button'
 import ContractState from '../ContractState'
 import Paper from '@material-ui/core/Paper'
 import Dialog from '@material-ui/core/Dialog'
+
+import {groomWei} from '../../utils/groomBalance'
+
+import walletContext from '../../context/WalletProvider/WalletProviderContext';
 
 //inline styles
 const styles = {
@@ -25,7 +27,26 @@ const dialogStyles = {
   }
 }
 
-class ShopItem extends Component {
+import shopABI from '../../contracts/abi/TokenShop.json';
+const SHOP_ADDRESS = process.env.REACT_APP_TOKEN_SHOP_CONTRACT_ADDRESS
+
+const ShopItem = () => {
+  const [dialogOpen, setDialog] = useState(false)
+
+  const {
+    setConnected,
+    setWalletProvider,
+    removeWalletProvider,
+    setAccount,
+    removeAccount,
+    setTokenBalance,
+    removeTokenBalance,
+    connectedContext,
+    providerContext,
+    accountContext,
+    tokenBalanceContext
+  } = useContext(walletContext);
+  
   constructor(props, context) {
     super(props)
 
@@ -210,7 +231,7 @@ class ShopItem extends Component {
     return balance
   }
 
-  render() {
+
     var oracleTaxGroomed = this.groomWei(this.state.oracleTax)
     var shopStockGroomed = this.groomWei(this.state.shopStock)
     var sendAmountGroomed = this.groomWei(this.state.weiAmount)
@@ -224,7 +245,7 @@ class ShopItem extends Component {
           tokenDecimals={this.state.tokenDecimals}
           oracleTax={this.state.oracleTax}
         />
-    }
+
     return (
       <div>
         <Paper style={styles} elevation={5}>
@@ -241,9 +262,7 @@ class ShopItem extends Component {
           </form>
           <p>The oracle charges {oracleTaxGroomed} Ether to get the exchange rate </p>
 
-      {/*
-      <ContractForm contract="ERC20TokenShop" method="buyToken" sendArgs={{from: this.props.accounts[0], value: this.state.weiAmount}} />
-      */}
+
         <p>Total: {sendAmountGroomed} ETH </p>
         <p>Purchase Amount: {this.state.purchaseAmount} TOBY </p>
         <br/>
@@ -257,23 +276,7 @@ class ShopItem extends Component {
       </Dialog>
       </div>
     )
-  }
+
 }
 
-ShopItem.contextTypes = {
-  drizzle: PropTypes.object
-}
-
-// May still need this even with data function to refresh component on updates for this contract.
-const mapStateToProps = state => {
-  return {
-    accounts: state.accounts,
-    TobyToken: state.contracts.ERC20TobyToken,
-    TokenShop: state.contracts.ERC20TokenShop,
-    drizzleStatus: state.drizzleStatus,
-    transactionStack: state.transactionStack,
-    transactions: state.transactions
-  }
-}
-
-export default drizzleConnect(ShopItem, mapStateToProps)
+export default ShopItem

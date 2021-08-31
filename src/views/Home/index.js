@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState} from 'react'
+import { Link } from 'react-router-dom'
 import logo from '../../assets/Shop.jpg'
 
 import Paper from '@material-ui/core/Paper'
@@ -13,7 +14,7 @@ import Button from '@material-ui/core/Button'
 // import Admin from '../Admin'
 // import TXModal from '../TXModal'
 
-import {groomWei} from '../../utils/groomBalance';
+import {groomWei} from '../../utils/groomBalance'
 
 //inline styles
 const styles = {
@@ -159,7 +160,9 @@ const Home = () => {
       <main className="container">
 
           <div className="pure-u-1-1 header">
-            <img src={logo} alt="toby-token-shop" width={600} />
+            <Link to='/shop'>
+              <img src={logo} alt="toby-token-shop" width={600} />
+            </Link>
           </div>
 
             <Paper>
