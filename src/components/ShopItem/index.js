@@ -30,7 +30,8 @@ const dialogStyles = {
 
 const ShopItem = () => {
   const [dialogOpen, setDialog] = useState(false)
-  const [account, setAccount] = useState('')
+  const [name, setName] = useState('')
+  const [symbol, setSymbol] = useState('')
   const [decimals, setDecimals] = useState('18')
   const [shopStock, setStock] = useState('0')
   const [weiAmount, setWeiAmount] = useState('0')
@@ -39,10 +40,10 @@ const ShopItem = () => {
   const [selectedToken, setSelectedToken] = useState('')
 
   const {
-    connectedContext,
+    connected,
     providerContext,
-    accountContext,
-    tokenBalanceContext
+    account,
+    tokenBalance
   } = useContext(walletContext);
 
   const {
@@ -51,12 +52,12 @@ const ShopItem = () => {
 
   useEffect(async () => {
     // initial load
-    if (connectedContext) {
-      let localAccount = accountContext
-      setDecimals(await contracts.tokenShop.methods.getTokenDecimals().call({from: localAccount}))
-      setShopStock(await contracts.tokenShop.methods.getShopStock().call({from: localAccount}))
-      setAccount(localAccount)
+    if (connected) {
+      setDecimals(await contracts.tokenShop.methods.getTokenDecimals().call({from: account}))
+      setStock(await contracts.tokenShop.methods.getShopStock().call({from: account}))
       setSelectedToken(TRFL_NAME)
+      setName(await contracts.tokenShop.methods.getTokenName().call({from: account}))
+      setSymbol(await contracts.tokenShop.methods.getTokenSymbol().call({from: account}))
     }
   }, [])
 
@@ -85,15 +86,19 @@ const ShopItem = () => {
 
   }
 
-  const handleBuyButton = () => {
+  const handleBuyButton = async () => {
     let zero = web3.utils.toBN(0)
     let amountBN = web3.utils.toBN(buyAmount)
     if (amountBN.gt(zero)) {
-      contracts.tokenShop.methods.buyToken(selectedToken,buyAmount).send({from: account})
+      await contracts.tokenShop.methods.buyToken(selectedToken,buyAmount).send({from: account})
     } else {
       setText("Oops! Check purchase amount.")
       handleDialogOpen()
     }
+  }
+
+  const handleShowStateButton = () => {
+    console.log('show contract details')
   }
 
   var shopStockGroomed = groomWei(shopStock)
@@ -102,9 +107,9 @@ const ShopItem = () => {
   return (
     <div>
       <Paper style={styles} elevation={5}>
-        <p><strong>Name: </strong> {contracts.tokenShop.methods.getTokenName().call({from: accounts[0]})}</p>
+        <p><strong>Name: </strong> {name}</p>
 
-        <p><strong>Symbol: </strong> <ContractData contract="ERC20TokenShop" method="getTokenSymbol" /></p>
+        <p><strong>Symbol: </strong> {symbol}</p>
         <p><strong>Store Stock: </strong> {shopStockGroomed}</p>
 
         <h3><p>Buy Tokens: </p></h3>
@@ -113,14 +118,13 @@ const ShopItem = () => {
           <input name="purchaseAmount" type="number" placeholder="tokens" value={buyAmount} onChange={handleInputChange} />
           <Button type="Button" variant="contained" onClick={handleBuyButton}>Buy</Button>
         </form>
-        <p>The oracle charges {oracleTaxGroomed} Ether to get the exchange rate </p>
 
 
       <p>Total: {sendAmountGroomed} ETH </p>
       <p>Purchase Amount: {buyAmount} TOBY </p>
       <br/>
       <Button type="Button" variant="contained" onClick={handleShowStateButton}>More Info</Button>
-      {contractInfo}
+      contractInfo
     </Paper>
 
     <Dialog PaperProps={dialogStyles} open={dialogOpen} >

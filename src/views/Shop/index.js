@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button'
 import TXModal from '../../components/TXModal'
 import ShopItem from '../../components/ShopItem'
 
+import walletContext from '../../context/WalletProvider/WalletProviderContext'
 
 //inline styles
 const styles = {
@@ -18,7 +19,21 @@ const styles = {
 }
 
 const Shop = () => {
-  const [showShop, setShowShop] = useState(false);
+  const [showShop, setShowShop] = useState(false)
+
+  const {
+    connected,
+    account,
+    tokenBalance
+  } = useContext(walletContext)
+
+  useEffect(() => {
+    // initial load
+  }, [])
+
+  const handleShopButton = () => {
+    console.log('button')
+  }
 
   return (
     <main className="container">
@@ -32,10 +47,10 @@ const Shop = () => {
       <br/><br/>
 
       <br/>
-      <Button type="Button" variant="contained" onClick={() => handleShopButton()}> Buy Token </Button>
+      <Button type="Button" variant="contained" onClick={handleShopButton}> Buy Token </Button>
       <br/>
       <br/>
-      {showShop ? <ShopItem /> : null}
+      {connected ? <ShopItem /> : null}
 
     </main>
   )

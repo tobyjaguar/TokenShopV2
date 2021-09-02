@@ -54,10 +54,10 @@ const web3Modal = new Web3Modal({
 
 const MyAppBar = () => {
   const [web3, setWeb3] = useState(null)
-  const [connected, setLocalConnection] = useState(false)
+  const [areWeConnected, setLocalConnection] = useState(false)
   const [shopAddress, setShopAddress] = useState('')
   const [tokenContract, setTokenContract] = useState(null)
-  const [tokenBalance, setBalance] = useState('0')
+  //const [tokenBalance, setBalance] = useState('0')
 
   const {
     setConnected,
@@ -67,10 +67,10 @@ const MyAppBar = () => {
     removeAccount,
     setTokenBalance,
     removeTokenBalance,
-    connectedContext,
+    connected,
     providerContext,
-    accountContext,
-    tokenBalanceContext
+    account,
+    tokenBalance
   } = useContext(walletContext)
 
   const {
@@ -78,7 +78,7 @@ const MyAppBar = () => {
     contracts
   } = useContext(contractsContext)
 
-  useEffect(async () => {
+  useEffect(() => {
     // fired on inital load of page
     setShopAddress(shorten(SHOP_ADDRESS))
   }, [])
@@ -97,14 +97,13 @@ const MyAppBar = () => {
             setWeb3(localWeb3)
             await setWalletProvider(localWeb3) // set provider to context
             let accounts = await localWeb3.eth.getAccounts()
-            await setAccount(accounts[0]) // set account to context
+            setAccount(accounts[0]) // set account to context
             let localContract = new localWeb3.eth.Contract(TOKEN_ABI, TOKEN_ADDRESS)
             setTokenContract(localContract)
             setContracts(localWeb3) // set contracts to context
             let balance = await localContract.methods.balanceOf(accounts[0]).call({from: accounts[0]})
-            setBalance(balance)
-            await setTokenBalance(balance) // set token balance to context
-            setLocalConnection(await setConnected(true)) // set connected to context
+            setTokenBalance(balance) // set token balance to context
+            setConnected(true) // set connected to context
           }
       }
       catch (ex) {

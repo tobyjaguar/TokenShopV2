@@ -3,7 +3,8 @@ import {
   REMOVE_CONTRACTS
 } from '../types';
 
-const ContractsReducer = (state, action) =>{
+const ContractsReducer = (state, action) => {
+  let { contracts } = state
   switch (action.type) {
     case SET_CONTRACTS:
       contracts = action.payload

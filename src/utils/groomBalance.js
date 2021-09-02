@@ -1,4 +1,4 @@
-import Web3 from 'web3';
+import web3 from 'web3';
 
 export function groomWei(weiValue) {
   var factor = Math.pow(10, 4)
