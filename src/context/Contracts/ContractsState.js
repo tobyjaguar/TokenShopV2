@@ -25,13 +25,21 @@ const ContractsState = ({children}) => {
 
   const [state, dispatch] = useReducer(contractsReducer, initialState);
 
-  const setContracts = async tx => {
-      dispatch({type: SET_TRANSACTIONS, payload: tx});
-      return tx;
+  const setContracts = provider => {
+      let tokenShop = new provider.eth.Contract(SHOP_ABI, SHOP_ADDRESS)
+      let tobyToken = new provider.eth.Contract(TOBY_ABI, TOBY_ADDRESS)
+      let truffleToken = new provider.eth.Contract(TRUFFLE_ABI, TRUFFLE_ADDRESS)
+      let contracts = {
+        tokenShop,
+        tobyToken,
+        truffleToken
+      }
+      dispatch({type: SET_CONTRACTS, payload: contracts})
+      return contracts;
   };
 
   const removeContracts = () => {
-      dispatch({type: REMOVE_TRANSACTIONS});
+      dispatch({type: REMOVE_CONTRACTS});
       return {};
   };
 
@@ -40,7 +48,7 @@ const ContractsState = ({children}) => {
     value={{
       setContracts,
       removeContracts,
-      contractsContext: state.contracts
+      contracts: state.contracts
     }}
     >
     {children}

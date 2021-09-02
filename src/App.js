@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import WalletProviderState from './context/WalletProvider/WalletProviderState';
 import TransactionsState from './context/Transactions/TransactionsState';
+import ContractsState from './context/Contracts/ContractsState'
 
 import MyAppBar from './views/AppBar';
 import Home from './views/Home';
@@ -16,13 +17,15 @@ const App = () => {
     <div className="App">
       <WalletProviderState>
         <TransactionsState>
-          <MyAppBar />
-          <Router>
-            <Switch>
-              <Route path="/shop" component={Shop} />
-              <Route exact path="/" component={Home} />
-            </Switch>
-          </Router>
+          <ContractsState>
+            <MyAppBar />
+            <Router>
+              <Switch>
+                <Route path="/shop" component={Shop} />
+                <Route exact path="/" component={Home} />
+              </Switch>
+            </Router>
+          </ContractsState>
         </TransactionsState>
     </WalletProviderState>
   </div>

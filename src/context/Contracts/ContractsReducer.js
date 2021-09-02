@@ -6,9 +6,21 @@ import {
 const ContractsReducer = (state, action) =>{
   switch (action.type) {
     case SET_CONTRACTS:
-      return [...state, action.payload];
+      contracts = action.payload
+      return {
+        ...state,
+        contracts: contracts
+      };
     case REMOVE_CONTRACTS:
-      return state;
+      contracts = {
+        tokenShop: '',
+        tobyToken: '',
+        truffleToken: ''
+      }
+      return {
+        ...state,
+        contracts: contracts
+      };
     default:
       return state;
   };

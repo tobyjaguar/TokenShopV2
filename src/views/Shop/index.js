@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 
 import TXModal from '../../components/TXModal'
-import ShopItem from '../../componetns/ShopItem'
+import ShopItem from '../../components/ShopItem'
 
 
 //inline styles
