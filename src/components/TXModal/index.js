@@ -1,6 +1,4 @@
-import React, { Component } from 'react'
-import { drizzleConnect } from 'drizzle-react'
-import PropTypes from 'prop-types'
+import React, { useContext, useEffect, useState } from 'react'
 
 //components
 import Dialog from '@material-ui/core/Dialog'
@@ -10,6 +8,8 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 
+import transactionsContext from '../../context/Transactions/TransactionsContext';
+
 //inline styles
 const styles = {
   style: {
@@ -18,95 +18,62 @@ const styles = {
   }
 }
 
-class TXModal extends Component {
-  constructor(props, context) {
-    super(props)
+const TXModal = () => {
+  const [isOpen, setOpen] = useState(false);
+  const [txHash, setTxHash] = useState('');
+  const [txStatus, setTxStatus] = useState('');
 
-    this.contracts = context.drizzle.contracts
+  const {
+    setTransactions,
+    txsContext
+  } = useContext(transactionsContext);
 
-    this.handleOpen = this.handleOpen.bind(this)
-    this.handleClose = this.handleClose.bind(this)
-
-    this.state = {
-      open: false,
-      txHash: '',
-      txStatus: ''
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.transactions !== prevProps.transactions) {
-      var stackId = this.props.transactionStack[this.props.transactionStack.length - 1]
-      if (this.props.transactions[stackId] !== undefined) {
-        if (stackId === undefined) {
-          this.setState({
-            open: true,
-            txHash: this.props.transactions[stackId].error.message,
-            txStatus: this.props.transactions[stackId].status
-          })
-        }
-        else {
-          this.setState({
-            open: true,
-            txHash: stackId,
-            txStatus: this.props.transactions[stackId].status
-          })
-        }
+  useEffect(async () => {
+    // if a new transaction is added to the context
+    let id = txsContext.length -1;
+    if (txsContext[id] !== undefined) {
+      if (txsContext[id].error.message) {
+        setOpen(true);
+        setTxHash(txsContext[id].error.message);
+        setTxStatus(txsContext[id].status);
+      }
+      else {
+        setOpen(true);
+        setTxHash(id);
+        setTxStatus(txsContext[id].status);
       }
     }
+  }, [txsContext]);
+
+  const handleOpen = () => {
+    setOpen(true);
   }
 
-  handleOpen() {
-    this.setState({ open: true })
+  const handleClose = () => {
+    setOpen(false);
   }
 
-  handleClose() {
-    this.setState({ open: false })
-  }
+  return (
+    <div>
+      <Dialog PaperProps={styles} open={isOpen} >
+        <DialogTitle id="tx-dialog">Transaction:</DialogTitle>
+        <List>
+          <ListItem>
+            <p>Status:</p>
+            <ListItemText primary={txStatus} />
+          </ListItem>
+          <ListItem>
+            <p>TxHash</p>
+            <br/>
+            <ListItemText secondary={txHash} />
+          </ListItem>
+          <ListItem>
+            <Button variant="contained" onClick={() => handleClose()} >Close</Button>
+          </ListItem>
+        </List>
+      </Dialog>
+    </div>
+  );
+};
 
-  render() {
-
-    return (
-      <div>
-
-        <Dialog PaperProps={styles} open={this.state.open} >
-          <DialogTitle id="tx-dialog">Transaction:</DialogTitle>
-          <List>
-            <ListItem>
-              <p>Status:</p>
-              <ListItemText primary={this.state.txStatus} />
-            </ListItem>
-            <ListItem>
-              <p>TxHash</p>
-              <br/>
-              <ListItemText secondary={this.state.txHash} />
-            </ListItem>
-            <ListItem>
-              <Button variant="contained" onClick={this.handleClose} >Close</Button>
-            </ListItem>
-          </List>
-        </Dialog>
-
-      </div>
-    )
-
-  }
-}
-
-
-TXModal.contextTypes = {
-  drizzle: PropTypes.object
-}
-
-// May still need this even with data function to refresh component on updates for this contract.
-const mapStateToProps = state => {
-  return {
-    accounts: state.accounts,
-    TokenShop: state.contracts.ERC20TokenShop,
-    drizzleStatus: state.drizzleStatus,
-    transactionStack: state.transactionStack,
-    transactions: state.transactions
-  }
-}
-
-export default drizzleConnect(TXModal, mapStateToProps)
+export default TXModal;

@@ -21,8 +21,9 @@ const WalletProviderState = ({children}) => {
 
   const [state, dispatch] = useReducer(walletProviderReducer, initialState);
 
-  const setConnected = async isConnected => {
-      dispatch({type: SET_PROVIDER, payload: isConnected});
+  const setConnected = isConnected => {
+    console.log(isConnected)
+      dispatch({type: SET_CONNECTED, payload: isConnected});
       return isConnected;
   };
 
@@ -32,7 +33,7 @@ const WalletProviderState = ({children}) => {
   };
 
   const removeWalletProvider = () => {
-      dispatch({type: SET_PROVIDER, payload: null});
+      dispatch({type: REMOVE_PROVIDER, payload: null});
       return null;
   };
 
@@ -42,7 +43,7 @@ const WalletProviderState = ({children}) => {
   };
 
   const removeAccount = () => {
-    dispatch({type: SET_ACCOUNT, payload: ''});
+    dispatch({type: REMOVE_ACCOUNT, payload: ''});
     return '';
   };
 
@@ -66,10 +67,10 @@ const WalletProviderState = ({children}) => {
       removeAccount,
       setTokenBalance,
       removeTokenBalance,
-      connectedContext: state.connected,
+      connected: state.connected,
       providerContext: state.provider,
-      accountContext: state.account,
-      tokenBalanceContext: state.token_balance
+      account: state.account,
+      tokenBalance: state.token_balance
     }}
     >
     {children}
