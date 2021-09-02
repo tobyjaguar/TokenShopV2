@@ -1,10 +1,11 @@
-import React, { Component } from 'react'
-import { drizzleConnect } from 'drizzle-react'
-import PropTypes from 'prop-types'
+import React, { useContext, useEffect, useState } from 'react'
 
 //components
-import { AccountData } from 'drizzle-react-components'
 import Paper from '@material-ui/core/Paper'
+
+import walletContext from '../../context/WalletProvider/WalletProviderContext'
+
+import {groomWei} from '../../utils/groomBalance'
 
 //inline styles
 const styles = {
@@ -12,49 +13,32 @@ const styles = {
     padding: 20
 }
 
-class Account extends Component {
-  constructor(props, context) {
-    super(props)
+const Account = ()  => {
+  const [ethBalance, setEthBalance] = useState('0')
 
-    this.contracts = context.drizzle.contracts
+  const {
+    connected,
+    providerContext,
+    account,
+    tokenBalance
+  } = useContext(walletContext);
 
-    this.handleInputChange = this.handleInputChange.bind(this)
+  useEffect(async () => {
+    setEthBalance(await providerContext.eth.getBalance(account))
+  }, [])
 
-  }
+  return (
+    <div>
+      <Paper style={styles} elevation={5} >
+      <h2>Active Account</h2>
+      <p><strong>Ether Balance: </strong> {groomWei(ethBalance)} ETH</p>
+      <p><strong>Token Balance: </strong> {tokenBalance} TOBY</p>
+      <br/>
+    </Paper>
+    </div>
+  )
 
-  handleInputChange(event) {
-    this.setState({ [event.target.name]: event.target.value })
-  }
 
-  render() {
-
-    return (
-      <div>
-        <Paper style={styles} elevation={5} >
-        <h2>Active Account</h2>
-        <AccountData accountIndex="0" units="ether" precision="4" />
-        <p><strong>Token Balance: </strong> {this.props.tknBalance} TOBY</p>
-        <br/>
-      </Paper>
-      </div>
-    )
-
-  }
 }
 
-
-Account.contextTypes = {
-  drizzle: PropTypes.object
-}
-
-// May still need this even with data function to refresh component on updates for this contract.
-const mapStateToProps = state => {
-  return {
-    accounts: state.accounts,
-    TobyToken: state.contracts.ERC20TobyToken,
-    TokenShop: state.contracts.ERC20TokenShop,
-    drizzleStatus: state.drizzleStatus
-  }
-}
-
-export default drizzleConnect(Account, mapStateToProps)
+export default Account

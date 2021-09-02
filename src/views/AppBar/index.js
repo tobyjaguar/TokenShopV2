@@ -149,9 +149,9 @@ const MyAppBar = () => {
   }
 
   return (
-    <AppBar style={style01} position="static">
+    <AppBar style={style01} position='static'>
       <Toolbar>
-        <Typography style={style01} variant="title" color="inherit">
+        <Typography style={style01} variant='subtitle1' color='inherit'>
             Shop Address: {shopAddress}
         </Typography>
         {connected ?
@@ -160,7 +160,7 @@ const MyAppBar = () => {
             </Typography>
           : <Typography style={style02} >
               <Button
-                variant="contained"
+                variant='contained'
                 onClick={async () => connect()}
               >
                 Connect

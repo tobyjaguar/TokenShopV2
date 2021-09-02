@@ -7,6 +7,8 @@ import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Paper'
 import Dialog from '@material-ui/core/Dialog'
 import TextField from '@material-ui/core/TextField'
+import MenuItem from '@material-ui/core/MenuItem'
+import MenuList from '@material-ui/core/MenuList'
 
 import {groomWei} from '../../utils/groomBalance'
 
@@ -14,6 +16,11 @@ import walletContext from '../../context/WalletProvider/WalletProviderContext'
 import contractsContext from '../../context/Contracts/ContractsContext'
 
 const TRFL_NAME = process.env.REACT_APP_TRFL_TOKEN_NAME
+const TRFL_ADDRESS = process.env.REACT_APP_TRFL_TOKEN_CONTRACT_ADDRESS
+const USDC_ADDRESS = process.env.REACT_APP_USDC_TOKEN_CONTRACT_ADDRESS
+const DAI_ADDRESS = process.env.REACT_APP_DAI_TOKEN_CONTRACT_ADDRESS
+
+const APPROVAL_AMOUNT = process.env.REACT_APP_APPROVAL_AMOUNT
 
 //inline styles
 const styles = {
@@ -29,7 +36,7 @@ const dialogStyles = {
   }
 }
 
-const ShopItem = () => {
+const Approve = () => {
   const [dialogOpen, setDialog] = useState(false)
   const [decimals, setDecimals] = useState('18')
   const [weiAmount, setWeiAmount] = useState('0')
@@ -81,7 +88,7 @@ const ShopItem = () => {
 
   }
 
-  const handleBuyButton = async () => {
+  const handleApproveButton = async () => {
     let zero = web3.utils.toBN(0)
     let amountBN = web3.utils.toBN(buyAmount)
     if (amountBN.gt(zero)) {
@@ -92,38 +99,23 @@ const ShopItem = () => {
     }
   }
 
-  const handleShowStateButton = () => {
-    console.log('show contract details')
-  }
+  let menu = [
+    {
+      "TRFL":
+    }
+  ]
 
   let sendAmountGroomed = groomWei(weiAmount)
 
   return (
     <div>
       <Paper style={styles} elevation={5}>
-        <h3><p>Buy Tokens: </p></h3>
-        <p>Number of Tokens:</p>
-        <form className="pure-form">
-          <TextField
-            name="purchaseAmount"
-            type="number"
-            placeholder="tokens"
-            value={buyAmount}
-            onChange={handleInputChange}
-            variant='outlined'
-            style={{margin: '5% auto'}}
-          />
-          <br/>
-          <Button type="Button" variant="contained" onClick={handleBuyButton}>Buy</Button>
-        </form>
+        <h3><p>Approve a Trade: </p></h3>
+        <MenuList>
 
+        </MenuList>
+        <Button type="Button" variant="contained" onClick={handleBuyButton}>Buy</Button>
 
-      <p>Total: {sendAmountGroomed} ETH </p>
-      <p>Purchase Amount: {buyAmount} TOBY </p>
-      <br/>
-      <Button type="Button" variant="contained" onClick={handleShowStateButton}>More Info</Button>
-      contractInfo
-    </Paper>
 
     <Dialog PaperProps={dialogStyles} open={dialogOpen} >
       <p>{alertText}</p>
@@ -134,4 +126,4 @@ const ShopItem = () => {
 
 }
 
-export default ShopItem
+export default Approve

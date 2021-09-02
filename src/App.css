@@ -2,7 +2,7 @@
 
 body,
 .pure-g [class*=pure-u] {
-  font-family: sans-serif;
+  font-family: Helvetica, Verdana, sans-serif;
 }
 
 .header {
