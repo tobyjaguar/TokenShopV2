@@ -8,12 +8,13 @@ import Paper from '@material-ui/core/Paper'
 import Dialog from '@material-ui/core/Dialog'
 import TextField from '@material-ui/core/TextField'
 
-import {groomWei} from '../../utils/groomBalance'
+import { groomWei } from '../../utils/groomBalance'
+import { convertAmount } from '../../utils/purchaseAmount'
 
 import walletContext from '../../context/WalletProvider/WalletProviderContext'
 import contractsContext from '../../context/Contracts/ContractsContext'
 
-const TRFL_NAME = process.env.REACT_APP_TRFL_TOKEN_NAME
+const TOKEN_NAME = process.env.REACT_APP_TRFL_TOKEN_NAME
 
 //inline styles
 const styles = {
@@ -42,17 +43,17 @@ const ShopItem = () => {
     providerContext,
     account,
     tokenBalance
-  } = useContext(walletContext);
+  } = useContext(walletContext)
 
   const {
     contracts
-  } = useContext(contractsContext);
+  } = useContext(contractsContext)
 
   useEffect(async () => {
     // initial load
     if (connected) {
       setDecimals(await contracts.tokenShop.methods.getTokenDecimals().call({from: account}))
-      setSelectedToken(TRFL_NAME)
+      setSelectedToken(TOKEN_NAME)
     }
   }, [])
 
@@ -68,15 +69,15 @@ const ShopItem = () => {
     if (event.target.value.match(/^[0-9.]{1,5}$/)){
       if (0 <= event.target.value && event.target.value <= 100) {
         var amount = Math.abs(parseFloat(event.target.value).toFixed(2))
-        this.setState({ [event.target.name]: amount })
-        this.setTXParamValue(amount)
+        // this.setState({ [event.target.name]: amount })
+        // this.setTXParamValue(amount)
+        setBuyAmount(amount)
+        setWeiAmount(convertAmount(amount))
       } else {
-          this.setState({ [event.target.name]: '' })
-          this.setTXParamValue(0)
+          setBuyAmount(0)
         }
     } else {
-        this.setState({ [event.target.name]: '' })
-        this.setTXParamValue(0)
+        setBuyAmount(0)
       }
 
   }
@@ -96,7 +97,8 @@ const ShopItem = () => {
     console.log('show contract details')
   }
 
-  let sendAmountGroomed = groomWei(weiAmount)
+  //let sendAmountGroomed = groomWei(weiAmount)
+  let sendAmountGroomed = weiAmount
 
   return (
     <div>
@@ -117,12 +119,11 @@ const ShopItem = () => {
           <Button type="Button" variant="contained" onClick={handleBuyButton}>Buy</Button>
         </form>
 
-
-      <p>Total: {sendAmountGroomed} ETH </p>
+      <p>Total: {sendAmountGroomed} USDC </p>
       <p>Purchase Amount: {buyAmount} TOBY </p>
       <br/>
       <Button type="Button" variant="contained" onClick={handleShowStateButton}>More Info</Button>
-      contractInfo
+      <p>contractInfo</p>
     </Paper>
 
     <Dialog PaperProps={dialogStyles} open={dialogOpen} >
