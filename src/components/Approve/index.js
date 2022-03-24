@@ -101,7 +101,7 @@ const Approve = () => {
 
   let menu = [
     {
-      "TRFL":
+      "TRFL": "TRFL"
     }
   ]
 
@@ -114,13 +114,14 @@ const Approve = () => {
         <MenuList>
 
         </MenuList>
-        <Button type="Button" variant="contained" onClick={handleBuyButton}>Buy</Button>
+        <Button type="Button" variant="contained" onClick={handleApproveButton}>Buy</Button>
 
 
-    <Dialog PaperProps={dialogStyles} open={dialogOpen} >
-      <p>{alertText}</p>
-      <p><Button variant="contained" onClick={handleDialogClose} >Close</Button></p>
-    </Dialog>
+      <Dialog PaperProps={dialogStyles} open={dialogOpen} >
+        <p>{alertText}</p>
+        <p><Button variant="contained" onClick={handleDialogClose} >Close</Button></p>
+      </Dialog>
+      </Paper>
     </div>
   )
 

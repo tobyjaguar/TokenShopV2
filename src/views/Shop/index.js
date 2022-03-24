@@ -9,6 +9,7 @@ import Divider from '@material-ui/core/Divider'
 
 import TXModal from '../../components/TXModal'
 import Account from '../../components/Account'
+import Approve from '../../components/Approve'
 import ShopItem from '../../components/ShopItem'
 import BurnToken from '../../components/BurnToken'
 import TransferToken from '../../components/TransferToken'
@@ -34,6 +35,7 @@ const Shop = () => {
   const [symbol, setSymbol] = useState('')
   const [stock, setStock] = useState('0')
   const [popOpen, setPop] = useState(false)
+  const [showApprove, setShowApprove] = useState(false)
   const [showTrade, setShowTrade] = useState(false)
   const [showBurn, setShowBurn] = useState(false)
   const [showTransfer, setShowTransfer] = useState(false)
@@ -61,6 +63,13 @@ const Shop = () => {
 
   const handlePopClose = () => {
     setPop(false)
+  }
+
+  const handleApproveButton = () => {
+    (connected) ?
+      setShowApprove(!showApprove)
+    :
+      setPop(true)
   }
 
   const handleTradeButton = () => {
@@ -99,7 +108,7 @@ const Shop = () => {
   }
 
   let shopStockGroomed = groomWei(stock)
-  
+
   return (
     <main className="container">
       <Grid container spacing={2}>
@@ -109,14 +118,14 @@ const Shop = () => {
               Welcome to the Token Shop!
               {
                 connected ?
-                  <div>
-                    <Divider style={{margin: '0 0 10px 0'}} />
+                  <React.Fragment>
+                    <br/>
                     <strong>Name: </strong> {name}
                     <br/>
                     <strong>Symbol: </strong> {symbol}
                     <br/>
                     <strong>Stock: </strong> {shopStockGroomed}
-                  </div>
+                  </React.Fragment>
                 :
                   null
               }
@@ -137,6 +146,14 @@ const Shop = () => {
             </Typography>
           </Popover>
           <TXModal />
+
+        <Grid item xs={12}>
+          <Button type="Button" variant="contained" onClick={handleApproveButton}> Approve </Button>
+        </Grid>
+
+        <Grid item xs={12}>
+          {showApprove ? <Approve /> : null}
+        </Grid>
 
         <Grid item xs={12}>
           <Button type="Button" variant="contained" onClick={handleTradeButton}> Trade </Button>
